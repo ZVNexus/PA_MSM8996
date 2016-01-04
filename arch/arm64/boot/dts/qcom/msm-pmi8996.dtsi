@@ -30,3 +30,8 @@
 		};
 	};
 };
+
+&flash_led {
+	qcom,ramp_up_step = "27_US";
+	qcom,ramp_dn_step = "27_US";
+};
