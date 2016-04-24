@@ -542,6 +542,7 @@ struct adreno_device {
 	unsigned int cx_misc_len;
 	void __iomem *cx_misc_virt;
 	const struct adreno_gpu_core *gpucore;
+	const char *zap_name_override;
 	struct adreno_firmware fw[2];
 	size_t gpmu_cmds_size;
 	unsigned int *gpmu_cmds;
