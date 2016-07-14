@@ -314,6 +314,9 @@ static void msm_restart_prepare(const char *cmd)
 				(cmd != NULL && cmd[0] != '\0'));
 	}
 
+	/* Preserve ramoops. */
+	need_warm_reset = true;
+
 #if defined(TARGET_SOMC_XBOOT)
 	/* Force warm reset and allow device to
 	 * preserve memory on restart for kernel
