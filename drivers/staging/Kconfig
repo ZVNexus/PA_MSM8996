@@ -122,4 +122,6 @@ source "drivers/staging/exfat/Kconfig"
 
 source "drivers/staging/wlan-qc/Kconfig"
 
+source "drivers/staging/qcacld-2.0/Kconfig"
+
 endif # STAGING
