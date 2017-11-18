@@ -1003,6 +1003,14 @@
 	status = "ok";
 };
 
+&reserved_memory {
+	ramoops_mem: ramoops_region@ac000000 {
+		compatible = "removed-dma-pool";
+		no-map;
+		reg = <0 0xAC000000 0 0x200000>;
+	};
+};
+
 &i2c_6 {
 	at24@51 {
 		compatible = "atmel,24c32";
@@ -1034,6 +1042,14 @@
 				  1 &tlmm 78 1
 				>;
 		interrupt-names = "silabs_fm_int", "silabs_fm_status_int";
+	};
+
+	ramoops {
+		compatible = "ramoops";
+		memory-region = <&ramoops_mem>;
+		record-size = <0x0 0x20000>;
+		console-size = <0x0 0x100000>;
+		pmsg-size = <0x0 0x80000>;
 	};
 };
 
