@@ -317,6 +317,13 @@ static void msm_restart_prepare(const char *cmd)
 	/* Preserve ramoops. */
 	need_warm_reset = true;
 
+	/* Perform a regular reboot upon panic or unspecified command. */
+	if (in_panic || !cmd) {
+		__raw_writel(0x77665501, restart_reason);
+		cmd = NULL;
+		in_panic = false;
+	}
+
 #if defined(TARGET_SOMC_XBOOT)
 	/* Force warm reset and allow device to
 	 * preserve memory on restart for kernel
