@@ -936,14 +936,6 @@
 	};
 };
 
-&firmware {
-	android {
-		fstab {
-			/delete-node/ vendor;
-		};
-	};
-};
-
 &i2c_6 { /* BLSP1 QUP6 */
 		qcom,clk-freq-out = <100000>;	/* Yangfb modyfied, old value is 400000*/
 		qcom,fs-clk-div =<104>;/* Yangfb modyfied*/
