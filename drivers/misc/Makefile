@@ -64,6 +64,11 @@ obj-$(CONFIG_ASPEED_LPC_SNOOP) += aspeed-lpc-snoop.o
 obj-$(CONFIG_PCI_ENDPOINT_TEST)        += pci_endpoint_test.o
 obj-$(CONFIG_FPR_FPC) 	+= fpr_FingerprintCard/
 
+obj-$(CONFIG_TUSB320_TYPE_C)	+= type-c-tusb320.o
+obj-$(CONFIG_FUSB301_TYPE_C)	+= type-c-fusb301.o
+obj-$(CONFIG_PTN5150_TYPE_C)	+= type-c-ptn5150.o
+obj-y  += type-c_notifier.o
+
 obj-$(CONFIG_UID_SYS_STATS)	+= uid_sys_stats.o
 obj-$(CONFIG_MEMORY_STATE_TIME)	+= memory_state_time.o
 obj-$(CONFIG_QPNP_MISC) 	+= qpnp-misc.o
