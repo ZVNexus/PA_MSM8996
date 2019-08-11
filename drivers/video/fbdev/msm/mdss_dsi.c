@@ -368,6 +368,7 @@ static int mdss_dsi_regulator_init(struct platform_device *pdev,
 }
 
 #ifndef CONFIG_FB_MSM_MDSS_SPECIFIC_PANEL
+extern int vendor_lcd_power_on(struct mdss_panel_data *pdata, int enable);
 static int mdss_dsi_panel_power_off(struct mdss_panel_data *pdata)
 {
 	int ret = 0;
@@ -398,6 +399,7 @@ static int mdss_dsi_panel_power_off(struct mdss_panel_data *pdata)
 		pr_err("%s: failed to disable vregs for %s\n",
 			__func__, __mdss_dsi_pm_name(DSI_PANEL_PM));
 
+	vendor_lcd_power_on(pdata, 0); //power off 1.8V  //guozhiming modify for lcd 2015-10-15
 end:
 	return ret;
 }
@@ -423,6 +425,7 @@ static int mdss_dsi_panel_power_on(struct mdss_panel_data *pdata)
 			__func__, __mdss_dsi_pm_name(DSI_PANEL_PM));
 		return ret;
 	}
+	vendor_lcd_power_on(pdata, 1); //power on 1.8V  //guozhiming modify for lcd 2015-10-15
 
 	/*
 	 * If continuous splash screen feature is enabled, then we need to
@@ -4420,6 +4423,12 @@ static int mdss_dsi_parse_gpio_params(struct platform_device *ctrl_pdev,
 	if (!gpio_is_valid(ctrl_pdata->rst_gpio))
 		pr_err("%s:%d, reset gpio not specified\n",
 						__func__, __LINE__);
+
+	ctrl_pdata->lcd_power_1v8_en = of_get_named_gpio(ctrl_pdev->dev.of_node,
+				 "qcom,lcd-vddi-en-gpio", 0);
+		if (!gpio_is_valid(ctrl_pdata->lcd_power_1v8_en))
+			pr_err("%s:%d, lcd_power_1v8_en gpio not specified\n",
+							__func__, __LINE__);
 
 	ctrl_pdata->lcd_mode_sel_gpio = of_get_named_gpio(
 			ctrl_pdev->dev.of_node, "qcom,panel-mode-gpio", 0);

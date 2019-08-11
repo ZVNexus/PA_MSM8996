@@ -595,6 +595,7 @@ struct mdss_dsi_ctrl_pdata {
 	int m_mdp_vote_cnt;
 	/* debugfs structure */
 	struct mdss_dsi_debugfs_info *debugfs_info;
+	int lcd_power_1v8_en;
 
 	struct dsi_err_container err_cont;
 
