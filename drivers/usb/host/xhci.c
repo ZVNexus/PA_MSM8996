@@ -2842,6 +2842,13 @@ static int xhci_check_bandwidth(struct usb_hcd *hcd, struct usb_device *udev)
 		}
 	}
 
+	// Anderson@, 2016/09/21
+	// If host controller is not halted, OTG won't work.
+	xhci_warn(xhci, "hcd->state:%d\n",hcd->state);
+	if(hcd->state == HC_STATE_QUIESCING){
+		goto command_cleanup;
+	}
+
 	ret = xhci_configure_endpoint(xhci, udev, command,
 			false, false);
 	if (ret)
