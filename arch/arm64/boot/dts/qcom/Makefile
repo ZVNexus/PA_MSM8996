@@ -52,6 +52,10 @@ dtb-$(CONFIG_MACH_SONY_MAPLE)		+= msm8998-v2.1-yoshino-maple-sde_generic.dtb
 dtb-$(CONFIG_MACH_SONY_POPLAR)		+= msm8998-v2-yoshino-poplar-sde_generic.dtb
 dtb-$(CONFIG_MACH_SONY_POPLAR)		+= msm8998-v2.1-yoshino-poplar-sde_generic.dtb
 
+# MSM8996 - MTP
+dtb-$(CONFIG_ARCH_MSM8996)			+= msm8996-v3-pmi8996-mtp_15801.dtb
+dtb-$(CONFIG_ARCH_MSM8996)			+= msm8996pro-pmi8996-mtp_15811.dtb
+
 # MSM8996 - SDE
 dtb-$(CONFIG_MACH_SONY_DORA)		+= msm8996-v3.0-pmi8996-tone-dora-sde_generic.dtb
 dtb-$(CONFIG_MACH_SONY_DORA)		+= msm8996-v3-pmi8996-tone-dora-sde_generic.dtb
