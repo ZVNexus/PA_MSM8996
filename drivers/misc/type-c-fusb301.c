@@ -412,26 +412,6 @@ static void fusb301_check_orient(struct fusb301_info *info, u8 status)
 	u8 orient = ((status & STAT_ORIENT)>>STAT_ORIENT_SHIFT);
 	info->fusb_orient = orient;
 }
-/*Yangfb add begin to notify pmic to checkout usb unplug */
-static int set_property_on_smbchg(enum power_supply_property prop, int val)
-{
-	int rc;
-	union power_supply_propval ret = {0, };
-	struct power_supply *battery_psy;
-
-	battery_psy = power_supply_get_by_name("battery");
-	if (!battery_psy) {
-		pr_err("battery_psy not exist\n");
-		return -EINVAL;
-	}
-
-	ret.intval = val;
-	rc = battery_psy->set_property(battery_psy, prop, &ret);
-	if (rc)
-		pr_err("bms psy does not allow updating prop %d rc = %d\n",prop, rc);
-
-	return rc;
-}
 static irqreturn_t fusb301_irq_thread(int irq, void *handle)
 {
     u8 intr, rdata;
@@ -535,8 +515,6 @@ static irqreturn_t fusb301_irq_thread(int irq, void *handle)
 			dev_err(&info->i2c->dev,"%s : otg_present = (%d)\n",__func__,info->otg_present);
 			power_supply_set_usb_otg(info->usb_psy, info->otg_present ? 1 : 0);
 		}
-/* Yangfb add to check usb unplug */
-		set_property_on_smbchg(POWER_SUPPLY_PROP_CHECK_USB_UNPLUG, true);
 	}
 	else if(intr & INT_BC_LVL)
 	{
