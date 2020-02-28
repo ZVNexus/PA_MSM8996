@@ -459,32 +459,6 @@
 		op,low-bat-voltage-uv=<3350000>;
 		op,low-bat-capacity=<10>;
 	};
-	oneplus_fastcg@26{
-		status = "ok";
-		compatible = "microchip,oneplus_fastcg";
-		reg = <0x26>;
-		microchip,mcu-en-gpio = <&tlmm 119 0x00>;
-		microchip,usb-sw-gpio = <&tlmm 135 0x00>;
-		microchip,ap-clk = <&tlmm 75 0x00>;
-		microchip,ap-data = <&tlmm 74 0x00>;
-
-		pinctrl-names = "mux_fastchg_active",
-		"mux_fastchg_suspend",
-		"mcu_data_active",
-		"mcu_data_suspend";
-		pinctrl-0 = <&fastchg_active
-		&usb_sw_active
-		&ap_clk_active >;
-		pinctrl-1 = <&usb_sw_suspend
-		&fastchg_suspend
-		&ap_clk_suspend>;
-		pinctrl-2 =<&ap_data_active>;
-		pinctrl-3 =<&ap_data_suspend>;
-		clocks = <&clock_gcc clk_uart_snoc_msmbus_a_clk>,
-			 <&clock_gcc clk_uart_cnoc_msmbus_a_clk>;
-		clock-names = "snoc", "cnoc";
-
-	};
 };
 
 &pmi8994_fg {
@@ -1411,107 +1385,7 @@
 			bias-pull-down; /* pull down */
 		};
 	};
-	/*end*/
-
-	oneplus_fastchg {
-		fastchg_active: fastchg_active {
-			mux {
-				pins = "gpio119";
-				function = "gpio";
-			};
-
-			config {
-				pins = "gpio119";
-				drive-strength = <16>;
-				bias-pull-up;
-			};
-		};
-
-		fastchg_suspend: fastchg_suspend {
-			mux {
-				pins = "gpio119";
-				function = "gpio";
-			};
-
-			config {
-				pins = "gpio119";
-				drive-strength = <2>;
-				bias-disable;
-			};
-		};
-		usb_sw_active: usb_sw_active {
-			mux {
-				pins = "gpio135";
-				function = "gpio";
-			};
-
-			config {
-				pins = "gpio135";
-				drive-strength = <16>;
-				bias-pull-up;
-			};
-		};
-		ap_clk_suspend: ap_clk_suspend {
-			mux {
-				pins = "gpio75";
-				function = "gpio";
-			};
-
-			config {
-				pins = "gpio75";
-				drive-strength = <2>;
-				bias-disable;
-			};
-		};
-		ap_clk_active: ap_clk_active {
-			mux {
-				pins = "gpio75";
-				function = "gpio";
-			};
-
-			config {
-				pins = "gpio75";
-				drive-strength = <16>;
-				bias-pull-up;
-			};
-		};
-		ap_data_suspend: ap_data_suspend {
-			mux {
-				pins = "gpio74";
-				function = "gpio";
-			};
-
-			config {
-				pins = "gpio74";
-				drive-strength = <2>;
-				bias-disable;
-			};
-		};
-		ap_data_active: ap_data_active {
-			mux {
-				pins = "gpio74";
-				function = "gpio";
-			};
-
-			config {
-				pins = "gpio74";
-				drive-strength = <16>;
-				bias-pull-up;
-			};
-		};
-		usb_sw_suspend: usb_sw_suspend {
-			mux {
-				pins = "gpio135";
-				function = "gpio";
-			};
-
-			config {
-				pins = "gpio135";
-				drive-strength = <2>;
-				bias-disable;
-			};
-		};
-	};
+	// END
 
 	//ruanbanmao add for nfc spi irq,begin.
 	nfc_spi_irq_active: nfc_spi_irq_active {
