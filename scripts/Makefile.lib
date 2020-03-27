@@ -275,6 +275,10 @@ cmd_gzip = (cat $(filter-out FORCE,$^) | gzip -n -f -9 > $@) || \
 # DTC
 # ---------------------------------------------------------------------------
 
+# Silence ALL DTS warnings, they are the
+# least of my problems right now.
+DTC_FLAGS += -q
+
 # Disable noisy checks by default
 ifeq ($(KBUILD_ENABLE_EXTRA_GCC_CHECKS),)
 DTC_FLAGS += -Wno-unit_address_vs_reg
