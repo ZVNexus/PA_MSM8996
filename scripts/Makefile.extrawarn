@@ -89,4 +89,15 @@ KBUILD_CFLAGS += $(call cc-option, -Wpacked-bitfield-compat)
 
 KBUILD_CPPFLAGS += -DKBUILD_EXTRA_WARN3
 
+dtc-warning-2 += $(call dtc-option,-Wnode_name_chars_strict)
+dtc-warning-2 += $(call dtc-option,-Wproperty_name_chars_strict)
+
+# Disable noisy warnings.
+DTC_FLAGS += $(call dtc-option,-Wno-unit_address_vs_reg)
+DTC_FLAGS += $(call dtc-option,-Wno-simple_bus_reg)
+DTC_FLAGS += $(call dtc-option,-Wno-unit_address_format)
+DTC_FLAGS += $(call dtc-option,-Wno-pci_bridge)
+DTC_FLAGS += $(call dtc-option,-Wno-pci_device_bus_num)
+DTC_FLAGS += $(call dtc-option,-Wno-pci_device_reg)
+
 endif

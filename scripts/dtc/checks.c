@@ -682,26 +682,6 @@ static void check_names_is_string_list(struct check *c, struct dt_info *dti,
 }
 WARNING(names_is_string_list, check_names_is_string_list, NULL);
 
-static void check_alias_paths(struct check *c, struct dt_info *dti,
-				    struct node *node)
-{
-	struct property *prop;
-
-	if (!streq(node->name, "aliases"))
-		return;
-
-	for_each_property(node, prop) {
-		if (!prop->val.val || !get_node_by_path(dti->dt, prop->val.val)) {
-			FAIL_PROP(c, dti, node, prop, "aliases property is not a valid node (%s)",
-				  prop->val.val);
-			continue;
-		}
-		if (strspn(prop->name, LOWERCASE DIGITS "-") != strlen(prop->name))
-			FAIL(c, dti, node, "aliases property name must include only lowercase and '-'");
-	}
-}
-WARNING(alias_paths, check_alias_paths, NULL);
-
 static void fixup_addr_size_cells(struct check *c, struct dt_info *dti,
 				  struct node *node)
 {
@@ -1175,30 +1155,6 @@ static void check_avoid_default_addr_size(struct check *c, struct dt_info *dti,
 WARNING(avoid_default_addr_size, check_avoid_default_addr_size, NULL,
 	&addr_size_cells);
 
-static void check_avoid_unnecessary_addr_size(struct check *c, struct dt_info *dti,
-					      struct node *node)
-{
-	struct property *prop;
-	struct node *child;
-	bool has_reg = false;
-
-	if (!node->parent || node->addr_cells < 0 || node->size_cells < 0)
-		return;
-
-	if (get_property(node, "ranges") || !node->children)
-		return;
-
-	for_each_child(node, child) {
-		prop = get_property(child, "reg");
-		if (prop)
-			has_reg = true;
-	}
-
-	if (!has_reg)
-		FAIL(c, dti, node, "unnecessary #address-cells/#size-cells without \"ranges\" or child \"reg\" property");
-}
-WARNING(avoid_unnecessary_addr_size, check_avoid_unnecessary_addr_size, NULL, &avoid_default_addr_size);
-
 static bool node_is_disabled(struct node *node)
 {
 	struct property *prop;
@@ -1249,13 +1205,6 @@ static void check_unique_unit_address_common(struct check *c,
 		}
 	}
 }
-
-static void check_unique_unit_address(struct check *c, struct dt_info *dti,
-					      struct node *node)
-{
-	check_unique_unit_address_common(c, dti, node, false);
-}
-WARNING(unique_unit_address, check_unique_unit_address, NULL, &avoid_default_addr_size);
 
 static void check_unique_unit_address_if_enabled(struct check *c, struct dt_info *dti,
 					      struct node *node)
@@ -1640,31 +1589,6 @@ static void check_graph_nodes(struct check *c, struct dt_info *dti,
 }
 WARNING(graph_nodes, check_graph_nodes, NULL);
 
-static void check_graph_child_address(struct check *c, struct dt_info *dti,
-				      struct node *node)
-{
-	int cnt = 0;
-	struct node *child;
-
-	if (node->bus != &graph_ports_bus && node->bus != &graph_port_bus)
-		return;
-
-	for_each_child(node, child) {
-		struct property *prop = get_property(child, "reg");
-
-		/* No error if we have any non-zero unit address */
-		if (prop && propval_cell(prop) != 0)
-			return;
-
-		cnt++;
-	}
-
-	if (cnt == 1 && node->addr_cells != -1)
-		FAIL(c, dti, node, "graph node has single child node '%s', #address-cells/#size-cells are not necessary",
-		     node->children->name);
-}
-WARNING(graph_child_address, check_graph_child_address, NULL, &graph_nodes);
-
 static void check_graph_reg(struct check *c, struct dt_info *dti,
 			    struct node *node)
 {
@@ -1794,8 +1718,6 @@ static struct check *check_table[] = {
 	&spi_bus_reg,
 
 	&avoid_default_addr_size,
-	&avoid_unnecessary_addr_size,
-	&unique_unit_address,
 	&unique_unit_address_if_enabled,
 	&obsolete_chosen_interrupt_controller,
 	&chosen_node_is_root, &chosen_node_bootargs, &chosen_node_stdout_path,
@@ -1821,9 +1743,7 @@ static struct check *check_table[] = {
 	&gpios_property,
 	&interrupts_property,
 
-	&alias_paths,
-
-	&graph_nodes, &graph_child_address, &graph_port, &graph_endpoint,
+	&graph_nodes, &graph_port, &graph_endpoint,
 
 	&always_fail,
 };
