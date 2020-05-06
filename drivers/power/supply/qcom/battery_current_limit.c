@@ -302,10 +302,14 @@ static int get_and_evaluate_battery_soc(void)
 				POWER_SUPPLY_PROP_CAPACITY, &ret);
 		battery_percentage = ret.intval;
 		battery_soc_val = battery_percentage;
-		pr_debug("Battery SOC reported:%d", battery_soc_val);
+		pr_debug("Battery SOC reported:%d\n", battery_soc_val);
 		trace_bcl_sw_mitigation("SoC reported", battery_soc_val);
 		prev_soc_state = bcl_soc_state;
-		bcl_soc_state = (battery_soc_val <= soc_low_threshold) ?
+		pr_debug("is_usb_present:%d", is_usb_present);
+		if(is_usb_present)
+			bcl_soc_state = BCL_HIGH_THRESHOLD;
+		else
+			bcl_soc_state = (battery_soc_val <= soc_low_threshold) ?
 					BCL_LOW_THRESHOLD : BCL_HIGH_THRESHOLD;
 		if (bcl_soc_state == prev_soc_state)
 			return NOTIFY_OK;
@@ -322,10 +326,22 @@ static int power_supply_callback(struct notifier_block *nb,
 				  unsigned long event, void *data)
 {
 	struct power_supply *psy = data;
+	static struct power_supply *usb_psy;
+	int usb_state;
+	bool is_usb_present;
 
 	if (gbcl->bcl_mode != BCL_DEVICE_ENABLED) {
 		pr_debug("BCL is not enabled\n");
 		return NOTIFY_OK;
+	}
+
+	if (!usb_psy)
+		usb_psy = power_supply_get_by_name("usb");
+	if (usb_psy) {
+		usb_state = usb_psy->get_property(usb_psy,
+				POWER_SUPPLY_PROP_PRESENT, &ret);
+		if (usb_state == 0)
+			is_usb_present = ret.intval;
 	}
 
 	if (strcmp(psy->desc->name, "battery"))
